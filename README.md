@@ -7,6 +7,8 @@ This repository is for the App HealthTracker for your daily use  , to benefit ev
 [![Database](https://img.shields.io/badge/Database-H2%20In--Memory-blue.svg)](https://www.h2database.com/)
 [![Frontend](https://img.shields.io/badge/Frontend-Thymeleaf%20%7C%20JS%20%7C%20CSS3-pink.svg)](#)
 
+> 🚀 **Napomena o projektu:** Ova aplikacija predstavlja **samostalni startni projekat (MVP)** koji služi kao čvrsta osnova za daljnji razvoj. Predviđena je za kontinuirano unapređenje, dodavanje novih funkcionalnosti i potpuno prilagođavanje korisničkom sučelju i individualnim potrebama svakog korisnika.
+
 **HealthTracker** je moderna, višenamjenska web aplikacija za praćenje ličnog zdravlja, aktivnosti, ishrane, sna i napretka. Dizajnirana sa naglaskom na estetiku i korisničko iskustvo, aplikacija nudi **4 dinamičke teme**, pametnog motivacijskog asistenta, te vizuelne prikazivače napretka u stilu *Samsung Health-a*.
 
 ---
