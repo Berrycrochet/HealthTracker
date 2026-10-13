@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTracker</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+    <h1>💗 HealthTracker</h1>
+    <p>Tvoj mali kutak za brigu o sebi</p>
+</header>
+
+<main>
+    <section class="welcome">
+        <h2>Dobrodošla u svoj dnevnik zdravlja! 🌷</h2>
+        <p>Prati svoje navike, bilježi napredak i odvoji vrijeme za sebe.</p>
+    </section>
+
+    <section class="cards">
+        <article class="card pink">
+            <h3>💗 Krvni pritisak</h3>
+            <p>120/80</p>
+            <span>mmHg · primjer</span>
+        </article>
+
+        <article class="card green">
+            <h3>💧 Puls</h3>
+            <p>72</p>
+            <span>otkucaja/min · primjer</span>
+        </article>
+
+        <article class="card purple">
+            <h3>🌙 San</h3>
+            <p>7.5 h</p>
+            <span>primjer trajanja sna</span>
+        </article>
+    </section>
+
+    <section class="form-card">
+        <h2>✨ Zabilježi kako si danas</h2>
+        <p class="description">
+            Svaki mali korak je važan. Unesi svoje dnevne podatke.
+        </p>
+
+        <form id="healthForm">
+            <label for="date">Datum</label>
+            <input type="date" id="date" required>
+
+            <label for="weight">Težina (kg)</label>
+            <input type="number" id="weight"
+                   min="1" max="500" step="0.1"
+                   placeholder="Npr. 65.5">
+
+            <label for="sleep">Koliko si sati spavala?</label>
+            <input type="number" id="sleep"
+                   min="0" max="24" step="0.5"
+                   placeholder="Npr. 8">
+
+            <label for="water">Koliko čaša vode si popila?</label>
+            <input type="number" id="water"
+                   min="0" max="100"
+                   placeholder="Npr. 6">
+
+            <label for="mood">Kako se danas osjećaš?</label>
+            <select id="mood">
+                <option value="">Izaberi raspoloženje</option>
+                <option>Odlično 😊</option>
+                <option>Dobro 🌸</option>
+                <option>Umorno 😴</option>
+                <option>Pod stresom 🌧️</option>
+            </select>
+
+            <label for="notes">Bilješka za danas</label>
+            <textarea id="notes" rows="4"
+                      placeholder="Kako ti je prošao dan? Jesi li šetala, odmarala..."></textarea>
+
+            <button type="submit">💗 Sačuvaj dnevni unos</button>
+        </form>
+
+        <p id="message" role="status"></p>
+    </section>
+
+    <section class="habits">
+        <h2>🌷 Moje zdrave navike</h2>
+        <p>Označi šta si danas uspjela uraditi.</p>
+
+        <label class="habit">
+            <input type="checkbox">
+            Popila sam dovoljno vode 💧
+        </label>
+
+        <label class="habit">
+            <input type="checkbox">
+            Provela sam vrijeme u pokretu 🚶‍♀️
+        </label>
+
+        <label class="habit">
+            <input type="checkbox">
+            Napravila sam pauzu za sebe 🧘‍♀️
+        </label>
+
+        <label class="habit">
+            <input type="checkbox">
+            Pripremila sam se za kvalitetan san 🌙
+        </label>
+    </section>
+
+    <footer>
+        <p>💗 HealthTracker · Briga o sebi počinje malim koracima.</p>
+        <small>
+            Uneseni primjeri nisu medicinski savjet niti procjena zdravlja.
+        </small>
+    </footer>
+</main>
+
+<script>
+    const dateInput = document.getElementById("date");
+    const healthForm = document.getElementById("healthForm");
+    const messageEl = document.getElementById("message");
+
+    dateInput.value = new Date().toLocaleDateString("en-CA");
+
+    healthForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const entryData = {
+            date: document.getElementById("date").value,
+            weight: document.getElementById("weight").value ? parseFloat(document.getElementById("weight").value) : null,
+            sleep: document.getElementById("sleep").value ? parseFloat(document.getElementById("sleep").value) : null,
+            water: document.getElementById("water").value ? parseInt(document.getElementById("water").value) : null,
+            mood: document.getElementById("mood").value,
+            notes: document.getElementById("notes").value
+        };
+
+        // Pozivamo naš Spring Boot API na istoj adresi
+        fetch("/api/logs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(entryData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Greška pri spašavanju.");
+                }
+                return response.json();
+            })
+            .then(savedData => {
+                messageEl.textContent = "Podaci su uspješno sačuvani u bazi! 💗";
+                messageEl.style.color = "#4a7c59";
+
+                healthForm.reset();
+                dateInput.value = new Date().toLocaleDateString("en-CA");
+            })
+            .catch(error => {
+                console.error("Greška:", error);
+                messageEl.textContent = "Greška pri spajanju sa serverom.";
+                messageEl.style.color = "red";
+            });
+    });
+</script>
+
+</body>
+</html>

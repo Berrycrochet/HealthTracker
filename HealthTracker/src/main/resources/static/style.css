@@ -1,0 +1,229 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #fff7fb;
+    color: #493849;
+    padding: 30px;
+}
+
+header {
+    background: linear-gradient(135deg, #f7b9d0, #d9c5ff);
+    padding: 28px 35px;
+    border-radius: 22px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px #e8cddd55;
+}
+
+header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #684d66;
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #8d788b;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.card, .form-card, .habits {
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px #bda8ba20;
+    border: 1px solid #f1e3ee;
+}
+
+.card h3 {
+    font-size: 16px;
+    margin-bottom: 18px;
+}
+
+.card p {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.card span {
+    font-size: 13px;
+    color: #806f80;
+}
+
+.pink {
+    background: #ffe8f0;
+}
+
+.green {
+    background: #e3f8ed;
+}
+
+.purple {
+    background: #eee8ff;
+}
+
+.form-card {
+    background: white;
+    margin-bottom: 28px;
+}
+
+.form-card h2 {
+    margin-bottom: 6px;
+}
+
+.description {
+    color: #8d788b;
+    margin-bottom: 18px;
+}
+
+form {
+    display: grid;
+    gap: 10px;
+}
+
+label {
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+/* Dodan i select element pored input i textarea */
+input, select, textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #e7d7e4;
+    border-radius: 10px;
+    font: inherit;
+    background: #fffafd;
+}
+/* Postavljanje jednake boje teksta za sve ulazne elemente */
+input, select, textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #e7d7e4;
+    border-radius: 10px;
+    font: inherit;
+    background: #fffafd;
+    color: #493849; /* Eksplicitna boja teksta */
+}
+
+/* Boja teksta unutar samog padajućeg menija */
+select option {
+    color: #493849;
+    background: #ffffff;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid #e8b8e9;
+    border-color: #c59bd7;
+}
+
+button {
+    margin-top: 12px;
+    padding: 14px;
+    background: #c78fd2;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #ad72bd;
+    transform: translateY(-2px);
+}
+
+#message {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #a265ae;
+}
+
+/* Stilizacija za sekciju navika */
+.habits {
+    background: white;
+}
+
+.habits h2 {
+    margin-bottom: 6px;
+}
+
+.habits > p {
+    color: #8d788b;
+    margin-bottom: 18px;
+}
+
+.habit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fffafd;
+    border: 1px solid #f1e3ee;
+    border-radius: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.habit input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #c78fd2;
+    cursor: pointer;
+}
+
+/* Stilizacija za footer */
+footer {
+    text-align: center;
+    padding: 30px 0 10px;
+    color: #8d788b;
+}
+
+footer p {
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+footer small {
+    font-size: 12px;
+    color: #a190a0;
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 15px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
