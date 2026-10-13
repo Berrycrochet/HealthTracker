@@ -1,3 +1,107 @@
+/* ===================================================
+   1. DEFINICIJA 4 TEMA (CSS VARIJABLE)
+   =================================================== */
+
+/* 🌸 Tema 1: Girly Whimsy Light (Default) */
+:root, [data-theme="girly-light"] {
+    --bg-body: #fff7fb;
+    --text-main: #493849;
+    --text-muted: #8d788b;
+    --header-bg: linear-gradient(135deg, #f7b9d0, #d9c5ff);
+    --header-text: #493849;
+    --card-bg: #ffffff;
+    --card-border: #f1e3ee;
+    --card-shadow: 0 5px 20px #bda8ba20;
+    --btn-bg: #c78fd2;
+    --btn-hover: #ad72bd;
+    --btn-text: #ffffff;
+    --input-bg: #fffafd;
+    --input-border: #e7d7e4;
+    --agent-bg: linear-gradient(135deg, #eee8ff, #ffe8f0);
+    --agent-title: #ad72bd;
+    --card-pink: #ffe8f0;
+    --card-green: #e3f8ed;
+    --card-purple: #eee8ff;
+    --nav-active-bg: #ffffff;
+    --nav-active-color: #ad72bd;
+}
+
+/* 🍷 Tema 2: Girly Romantic Dark (Dark Red & Black) */
+[data-theme="girly-dark"] {
+    --bg-body: #12080e;
+    --text-main: #f5e6ee;
+    --text-muted: #b88ea6;
+    --header-bg: linear-gradient(135deg, #5c0d23, #2a081d);
+    --header-text: #ffd6e8;
+    --card-bg: #1c0e17;
+    --card-border: #3b172a;
+    --card-shadow: 0 5px 20px #00000080;
+    --btn-bg: #801b38;
+    --btn-hover: #a6244a;
+    --btn-text: #ffffff;
+    --input-bg: #26121f;
+    --input-border: #4a1e35;
+    --agent-bg: linear-gradient(135deg, #2b081e, #3b0a1a);
+    --agent-title: #e65c83;
+    --card-pink: #330c19;
+    --card-green: #0d2b1e;
+    --card-purple: #230c2b;
+    --nav-active-bg: #3b172a;
+    --nav-active-color: #f7a8c4;
+}
+
+/* 🩵 Tema 3: Blue Pastel Light (Male Light) */
+[data-theme="blue-light"] {
+    --bg-body: #f0f7ff;
+    --text-main: #233548;
+    --text-muted: #647d96;
+    --header-bg: linear-gradient(135deg, #a3d2f5, #c7e5ff);
+    --header-text: #1a2f43;
+    --card-bg: #ffffff;
+    --card-border: #d4e5f7;
+    --card-shadow: 0 5px 20px #90b8e020;
+    --btn-bg: #4a90e2;
+    --btn-hover: #357abd;
+    --btn-text: #ffffff;
+    --input-bg: #f7fbff;
+    --input-border: #cfe0f2;
+    --agent-bg: linear-gradient(135deg, #e3f2fd, #e1f5fe);
+    --agent-title: #2a75d3;
+    --card-pink: #e3f2fd;
+    --card-green: #e0f2f1;
+    --card-purple: #e8eaf6;
+    --nav-active-bg: #ffffff;
+    --nav-active-color: #2a75d3;
+}
+
+/* ⚡ Tema 4: Tech Bro Dark (Dark Green & Black) */
+[data-theme="tech-dark"] {
+    --bg-body: #0d1117;
+    --text-main: #e6edf3;
+    --text-muted: #7d8590;
+    --header-bg: linear-gradient(135deg, #092e20, #161b22);
+    --header-text: #58a6ff;
+    --card-bg: #161b22;
+    --card-border: #21262d;
+    --card-shadow: 0 5px 20px #000000a0;
+    --btn-bg: #238636;
+    --btn-hover: #2ea043;
+    --btn-text: #ffffff;
+    --input-bg: #0d1117;
+    --input-border: #30363d;
+    --agent-bg: linear-gradient(135deg, #0d2818, #161b22);
+    --agent-title: #3fb950;
+    --card-pink: #0f2d1e;
+    --card-green: #133829;
+    --card-purple: #1a2d3d;
+    --nav-active-bg: #21262d;
+    --nav-active-color: #3fb950;
+}
+
+/* ===================================================
+   2. STILOVI APLIKACIJE SA VARIJABLAMA
+   =================================================== */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,17 +110,29 @@
 
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #fff7fb;
-    color: #493849;
+    background: var(--bg-body);
+    color: var(--text-main);
     padding: 30px;
+    transition: background 0.3s, color 0.3s;
+}
+
+main {
+    max-width: 1100px;
+    margin: auto;
 }
 
 header {
-    background: linear-gradient(135deg, #f7b9d0, #d9c5ff);
+    background: var(--header-bg);
+    color: var(--header-text);
     padding: 28px 35px;
     border-radius: 22px;
     margin-bottom: 30px;
-    box-shadow: 0 8px 25px #e8cddd55;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 header h1 {
@@ -25,12 +141,75 @@ header h1 {
 }
 
 header p {
-    color: #684d66;
+    color: var(--text-muted);
 }
 
-main {
-    max-width: 1100px;
-    margin: auto;
+header nav {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+header nav a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+header nav a:hover, header nav a.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-color);
+}
+
+/* Birač Tema u Headeru */
+.theme-select-container select {
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--input-border);
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Agent Stilizacija */
+.agent-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--agent-bg);
+    padding: 18px 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    border: 1px solid var(--card-border);
+}
+
+.agent-avatar {
+    font-size: 32px;
+    background: var(--card-bg);
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--card-shadow);
+}
+
+.agent-bubble h4 {
+    font-size: 15px;
+    color: var(--agent-title);
+    margin-bottom: 3px;
+}
+
+.agent-bubble p {
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 500;
 }
 
 .welcome {
@@ -42,8 +221,8 @@ main {
     margin-bottom: 8px;
 }
 
-.welcome p {
-    color: #8d788b;
+.welcome p, .description {
+    color: var(--text-muted);
 }
 
 .cards {
@@ -53,11 +232,12 @@ main {
     margin-bottom: 28px;
 }
 
-.card, .form-card, .habits {
+.card, .form-card, .habits, .chart-container {
+    background: var(--card-bg);
     padding: 25px;
     border-radius: 20px;
-    box-shadow: 0 5px 20px #bda8ba20;
-    border: 1px solid #f1e3ee;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
 }
 
 .card h3 {
@@ -73,33 +253,19 @@ main {
 
 .card span {
     font-size: 13px;
-    color: #806f80;
+    color: var(--text-muted);
 }
 
-.pink {
-    background: #ffe8f0;
-}
-
-.green {
-    background: #e3f8ed;
-}
-
-.purple {
-    background: #eee8ff;
-}
+.pink { background: var(--card-pink); }
+.green { background: var(--card-green); }
+.purple { background: var(--card-purple); }
 
 .form-card {
-    background: white;
     margin-bottom: 28px;
 }
 
 .form-card h2 {
     margin-bottom: 6px;
-}
-
-.description {
-    color: #8d788b;
-    margin-bottom: 18px;
 }
 
 form {
@@ -110,44 +276,34 @@ form {
 label {
     font-weight: 600;
     margin-top: 8px;
+    color: var(--text-main);
 }
 
-/* Dodan i select element pored input i textarea */
 input, select, textarea {
     width: 100%;
     padding: 13px;
-    border: 1px solid #e7d7e4;
+    border: 1px solid var(--input-border);
     border-radius: 10px;
     font: inherit;
-    background: #fffafd;
-}
-/* Postavljanje jednake boje teksta za sve ulazne elemente */
-input, select, textarea {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #e7d7e4;
-    border-radius: 10px;
-    font: inherit;
-    background: #fffafd;
-    color: #493849; /* Eksplicitna boja teksta */
+    background: var(--input-bg);
+    color: var(--text-main);
 }
 
-/* Boja teksta unutar samog padajućeg menija */
 select option {
-    color: #493849;
-    background: #ffffff;
+    color: var(--text-main);
+    background: var(--card-bg);
 }
 
 input:focus, select:focus, textarea:focus {
-    outline: 2px solid #e8b8e9;
-    border-color: #c59bd7;
+    outline: 2px solid var(--btn-bg);
+    border-color: var(--btn-bg);
 }
 
 button {
     margin-top: 12px;
     padding: 14px;
-    background: #c78fd2;
-    color: white;
+    background: var(--btn-bg);
+    color: var(--btn-text);
     border: none;
     border-radius: 12px;
     font-size: 16px;
@@ -157,73 +313,138 @@ button {
 }
 
 button:hover {
-    background: #ad72bd;
+    background: var(--btn-hover);
     transform: translateY(-2px);
 }
 
 #message {
     margin-top: 15px;
     font-weight: 600;
-    color: #a265ae;
+    color: var(--agent-title);
 }
 
-/* Stilizacija za sekciju navika */
-.habits {
-    background: white;
-}
-
-.habits h2 {
-    margin-bottom: 6px;
-}
-
-.habits > p {
-    color: #8d788b;
-    margin-bottom: 18px;
-}
+/* Navike */
+.habits h2 { margin-bottom: 6px; }
+.habits > p { color: var(--text-muted); margin-bottom: 18px; }
 
 .habit {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: #fffafd;
-    border: 1px solid #f1e3ee;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     margin-top: 10px;
     cursor: pointer;
-    font-weight: normal;
+    color: var(--text-main);
 }
 
 .habit input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #c78fd2;
-    cursor: pointer;
+    accent-color: var(--btn-bg);
 }
 
-/* Stilizacija za footer */
+/* Samsung Health Stil */
+.health-heart-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.rings-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.ring-stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 22px;
+    border-radius: 18px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    flex: 1;
+    min-width: 160px;
+}
+
+.ring-stat strong {
+    font-size: 20px;
+    color: var(--text-main);
+}
+
+.pink-ring { border-left: 5px solid #f7b9d0; }
+.purple-ring { border-left: 5px solid #d9c5ff; }
+.green-ring { border-left: 5px solid #b3f2dd; }
+
+/* Profil i Avatar */
+.text-center { text-align: center; }
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.current-avatar {
+    font-size: 55px;
+    background: var(--agent-bg);
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+}
+
+.avatar-picker {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.avatar-picker button {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    font-size: 26px;
+    padding: 8px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    margin-top: 0;
+    width: auto;
+}
+
+.avatar-picker button:hover {
+    transform: scale(1.15);
+    background: var(--card-pink);
+}
+
 footer {
     text-align: center;
     padding: 30px 0 10px;
-    color: #8d788b;
+    color: var(--text-muted);
 }
 
-footer p {
-    margin-bottom: 6px;
-    font-size: 14px;
-}
-
-footer small {
-    font-size: 12px;
-    color: #a190a0;
-}
+footer p { margin-bottom: 6px; font-size: 14px; }
+footer small { font-size: 12px; color: var(--text-muted); }
 
 @media (max-width: 700px) {
-    body {
-        padding: 15px;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
+    body { padding: 15px; }
+    .cards { grid-template-columns: 1fr; }
 }

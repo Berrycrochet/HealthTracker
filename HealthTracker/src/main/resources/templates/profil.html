@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthTracker - Profil & BMI</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1 id="appLogo">💗 HealthTracker</h1>
+        <p id="appSubtitle">Tvoj mali kutak za brigu o sebi</p>
+    </div>
+
+    <!-- BIRAČ TEMA SA EMOJIJIMA -->
+    <div class="theme-select-container">
+        <select id="themeSelector" onchange="changeTheme(this.value)">
+            <option value="girly-light">🌸 Girly Whimsy (Light)</option>
+            <option value="girly-dark">🍷 Romantic Dark (Dark Red)</option>
+            <option value="blue-light">🩵 Blue Pastel (Light)</option>
+            <option value="tech-dark">⚡ Tech Bro (Dark Green)</option>
+        </select>
+    </div>
+
+    <nav>
+        <a href="/" id="navHome">🌸 Dnevnik</a>
+        <a href="/napredak" id="navProgress">📊 Moj Napredak</a>
+        <a href="/profil" class="active" id="navProfile">🧘‍♀️ Profil & BMI</a>
+    </nav>
+</header>
+
+<main>
+    <!-- Sekcija 1: Profil i postavljanje ciljeva -->
+    <section class="form-card text-center" style="margin-bottom: 28px;">
+        <div class="profile-header">
+            <div class="current-avatar" id="avatarDisplay">🌸</div>
+            <h2>Dobrodošla, <span id="profileName">Sara</span>! ✨</h2>
+        </div>
+
+        <h3 style="margin-top: 15px; font-size: 16px;">Izaberi svoj avatar:</h3>
+        <div class="avatar-picker">
+            <button type="button" onclick="setAvatar('🌸')">🌸</button>
+            <button type="button" onclick="setAvatar('👑')">👑</button>
+            <button type="button" onclick="setAvatar('🦋')">🦋</button>
+            <button type="button" onclick="setAvatar('🌷')">🌷</button>
+            <button type="button" onclick="setAvatar('🐱')">🐱</button>
+        </div>
+
+        <form id="profileForm" style="margin-top: 25px; text-align: left;">
+            <label for="userNameInput">Tvoje Ime / Nadimak</label>
+            <input type="text" id="userNameInput" value="Sara" required>
+
+            <label for="stepGoal">Dnevni cilj koraka</label>
+            <input type="number" id="stepGoal" value="10000">
+
+            <label for="waterGoal">Dnevni cilj čaša vode</label>
+            <input type="number" id="waterGoal" value="8">
+
+            <button type="submit" id="saveProfileBtn">💗 Sačuvaj Profil</button>
+        </form>
+
+        <p id="profileMessage" style="margin-top: 15px; font-weight: 600; color: #4a7c59;"></p>
+    </section>
+
+    <!-- Sekcija 2: BMI Kalkulator -->
+    <section class="form-card">
+        <h2>🧘‍♀️ Kalkulator Indeksa Tjelesne Mase (BMI)</h2>
+        <p class="description">Izračunaj svoj trenutni BMI indeks i provjeri kategoriju.</p>
+
+        <form id="bmiForm">
+            <label for="bmiWeight">Težina (kg)</label>
+            <input type="number" id="bmiWeight" step="0.1" placeholder="Npr. 65" required>
+
+            <label for="bmiHeight">Visina (cm)</label>
+            <input type="number" id="bmiHeight" placeholder="Npr. 170" required>
+
+            <button type="submit">Izračunaj BMI</button>
+        </form>
+
+        <div id="bmiResult" style="margin-top: 20px; display: none;" class="card pink">
+            <h3>Tvoj BMI: <span id="bmiValue" style="font-size: 28px; color: #493849;">--</span></h3>
+            <p id="bmiCategory" style="font-size: 18px; font-weight: normal; margin-top: 5px;"></p>
+        </div>
+    </section>
+</main>
+
+<script>
+    // --- LOGIKA ZA PROFIL I AVATAR ---
+
+    function setAvatar(emoji) {
+        document.getElementById("avatarDisplay").textContent = emoji;
+        localStorage.setItem("userAvatar", emoji);
+    }
+
+    document.getElementById("profileForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const name = document.getElementById("userNameInput").value;
+        const steps = document.getElementById("stepGoal").value;
+        const water = document.getElementById("waterGoal").value;
+
+        document.getElementById("profileName").textContent = name;
+
+        localStorage.setItem("userName", name);
+        localStorage.setItem("stepGoal", steps);
+        localStorage.setItem("waterGoal", water);
+
+        const msg = document.getElementById("profileMessage");
+        msg.textContent = "Profil je uspješno sačuvan! ✨";
+        setTimeout(() => { msg.textContent = ""; }, 3000);
+    });
+
+    // --- LOGIKA ZA BMI KALKULATOR ---
+
+    document.getElementById("bmiForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const w = parseFloat(document.getElementById("bmiWeight").value);
+        const h = parseFloat(document.getElementById("bmiHeight").value) / 100;
+
+        const bmi = (w / (h * h)).toFixed(1);
+
+        let category = "";
+        if (bmi < 18.5) category = "Nedovoljna težina 🍃";
+        else if (bmi < 24.9) category = "Normalna tjelesna težina 🌸";
+        else if (bmi < 29.9) category = "Povećana tjelesna težina 🌼";
+        else category = "Gojaznost 🌿";
+
+        document.getElementById("bmiValue").textContent = bmi;
+        document.getElementById("bmiCategory").textContent = "Kategorija: " + category;
+        document.getElementById("bmiResult").style.display = "block";
+    });
+
+    // --- LOGIKA ZA DINAČMIČKE TEME ---
+
+    const themeContent = {
+        "girly-light": {
+            logo: "💗 HealthTracker",
+            subtitle: "Tvoj mali kutak za brigu o sebi",
+            navHome: "🌸 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            saveProfileBtn: "💗 Sačuvaj Profil"
+        },
+        "girly-dark": {
+            logo: "🥀 HealthTracker",
+            subtitle: "Mračna elegancija i briga o sebi",
+            navHome: "🍷 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            saveProfileBtn: "🥀 Sačuvaj Profil"
+        },
+        "blue-light": {
+            logo: "🩵 HealthTracker",
+            subtitle: "Tvoj dnevni tracker zdravlja i kondicije",
+            navHome: "🧊 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♂️ Profil & BMI",
+            saveProfileBtn: "🩵 Sačuvaj Profil"
+        },
+        "tech-dark": {
+            logo: "⚡ HealthTracker",
+            subtitle: "Performance & Health Terminal",
+            navHome: "⚡ Terminal",
+            navProgress: "📊 Metrics",
+            navProfile: "⚙️ Config",
+            saveProfileBtn: "⚡ Save Config"
+        }
+    };
+
+    function setSafeText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    function changeTheme(themeName) {
+        document.documentElement.setAttribute("data-theme", themeName);
+        localStorage.setItem("appTheme", themeName);
+
+        const content = themeContent[themeName] || themeContent["girly-light"];
+
+        setSafeText("appLogo", content.logo);
+        setSafeText("appSubtitle", content.subtitle);
+        setSafeText("navHome", content.navHome);
+        setSafeText("navProgress", content.navProgress);
+        setSafeText("navProfile", content.navProfile);
+        setSafeText("saveProfileBtn", content.saveProfileBtn);
+    }
+
+    // Učitavanje korisničkih podataka i teme pri otvaranju stranice
+    window.addEventListener("DOMContentLoaded", () => {
+        // Učitaj podatke sačuvane u profilu
+        const savedName = localStorage.getItem("userName");
+        const savedAvatar = localStorage.getItem("userAvatar");
+        const savedSteps = localStorage.getItem("stepGoal");
+        const savedWater = localStorage.getItem("waterGoal");
+
+        if (savedName) {
+            document.getElementById("profileName").textContent = savedName;
+            document.getElementById("userNameInput").value = savedName;
+        }
+        if (savedAvatar) {
+            document.getElementById("avatarDisplay").textContent = savedAvatar;
+        }
+        if (savedSteps) {
+            document.getElementById("stepGoal").value = savedSteps;
+        }
+        if (savedWater) {
+            document.getElementById("waterGoal").value = savedWater;
+        }
+
+        // Učitaj izabranu temu
+        const savedTheme = localStorage.getItem("appTheme") || "girly-light";
+        const selector = document.getElementById("themeSelector");
+        if (selector) selector.value = savedTheme;
+        changeTheme(savedTheme);
+    });
+</script>
+</body>
+</html>

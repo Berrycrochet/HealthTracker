@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthTracker - Napredak</title>
+    <link rel="stylesheet" href="/style.css">
+    <!-- Chart.js biblioteka za grafikone -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1 id="appLogo">💗 HealthTracker</h1>
+        <p id="appSubtitle">Tvoj mali kutak za brigu o sebi</p>
+    </div>
+
+    <!-- BIRAČ TEMA SA EMOJIJIMA -->
+    <div class="theme-select-container">
+        <select id="themeSelector" onchange="changeTheme(this.value)">
+            <option value="girly-light">🌸 Girly Whimsy (Light)</option>
+            <option value="girly-dark">🍷 Romantic Dark (Dark Red)</option>
+            <option value="blue-light">🩵 Blue Pastel (Light)</option>
+            <option value="tech-dark">⚡ Tech Bro (Dark Green)</option>
+        </select>
+    </div>
+
+    <nav>
+        <a href="/" id="navHome">🌸 Dnevnik</a>
+        <a href="/napredak" class="active" id="navProgress">📊 Moj Napredak</a>
+        <a href="/profil" id="navProfile">🧘‍♀️ Profil & BMI</a>
+    </nav>
+</header>
+
+<main>
+    <section class="welcome">
+        <h2 id="progressTitle">Vizuelni pregled tvog napretka 📊</h2>
+        <p id="progressDesc">Prati promjene u težini i snu kroz vrijeme.</p>
+    </section>
+
+    <!-- Samsung Health Stil - Srce / Prstenovi Napretka -->
+    <div class="health-heart-card">
+        <h3 id="ringsTitle">💗 Tvoji Dnevni Prstenovi</h3>
+
+        <div class="rings-container">
+            <!-- Koraci -->
+            <div class="ring-stat pink-ring">
+                <span class="icon">🚶‍♀️</span>
+                <div>
+                    <strong id="stepsVal">0</strong> / <small id="targetStepsVal">10000</small>
+                    <p>Koraci</p>
+                </div>
+            </div>
+
+            <!-- Kalorije -->
+            <div class="ring-stat purple-ring">
+                <span class="icon">🔥</span>
+                <div>
+                    <strong id="calVal">0</strong> / <small>500</small>
+                    <p>Kcal</p>
+                </div>
+            </div>
+
+            <!-- San -->
+            <div class="ring-stat green-ring">
+                <span class="icon">🌙</span>
+                <div>
+                    <strong id="sleepVal">0</strong> / <small>8</small> h
+                    <p>San</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Trend Težine (kg)</h3>
+        <canvas id="weightChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h3>Sati Sna po Danima</h3>
+        <canvas id="sleepChart"></canvas>
+    </div>
+</main>
+
+<script>
+    let weightChartInstance = null;
+    let sleepChartInstance = null;
+    let cachedLogs = [];
+
+    // Teme sa tekstovima i prilagođenim bojama grafikona za svaku temu
+    const themeContent = {
+        "girly-light": {
+            logo: "💗 HealthTracker",
+            subtitle: "Tvoj mali kutak za brigu o sebi",
+            navHome: "🌸 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            progressTitle: "Vizuelni pregled tvog napretka 📊",
+            ringsTitle: "💗 Tvoji Dnevni Prstenovi",
+            lineColor: "#c78fd2",
+            fillColor: "#f7b9d055",
+            barColor: "#d9c5ff"
+        },
+        "girly-dark": {
+            logo: "🥀 HealthTracker",
+            subtitle: "Mračna elegancija i briga o sebi",
+            navHome: "🍷 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            progressTitle: "Vizuelni pregled noćnog napretka 📊",
+            ringsTitle: "🥀 Tvoji Prstenovi Napretka",
+            lineColor: "#e65c83",
+            fillColor: "#5c0d2355",
+            barColor: "#801b38"
+        },
+        "blue-light": {
+            logo: "🩵 HealthTracker",
+            subtitle: "Tvoj dnevni tracker zdravlja i kondicije",
+            navHome: "🧊 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♂️ Profil & BMI",
+            progressTitle: "Vizuelni pregled kondicije 📊",
+            ringsTitle: "🩵 Tvoji Dnevni Ciljevi",
+            lineColor: "#4a90e2",
+            fillColor: "#a3d2f555",
+            barColor: "#90b8e0"
+        },
+        "tech-dark": {
+            logo: "⚡ HealthTracker",
+            subtitle: "Performance & Health Terminal",
+            navHome: "⚡ Terminal",
+            navProgress: "📊 Metrics",
+            navProfile: "⚙️ Config",
+            progressTitle: "Performance Metrics & Analytics 📊",
+            ringsTitle: "⚡ Daily Target Status",
+            lineColor: "#3fb950",
+            fillColor: "#092e2055",
+            barColor: "#238636"
+        }
+    };
+
+    function setSafeText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    // Funkcija koja crta/osvježava grafikone sa bojama izabrane teme
+    function renderCharts(themeName) {
+        if (!cachedLogs.length) return;
+
+        const content = themeContent[themeName] || themeContent["girly-light"];
+        const labels = cachedLogs.map(l => l.date || '');
+        const weights = cachedLogs.map(l => l.weight || null);
+        const sleeps = cachedLogs.map(l => l.sleep || null);
+
+        // Uništi stare grafikone prije crtanja novih pri promjeni teme
+        if (weightChartInstance) weightChartInstance.destroy();
+        if (sleepChartInstance) sleepChartInstance.destroy();
+
+        // 1. Grafikon Težine
+        weightChartInstance = new Chart(document.getElementById('weightChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Težina (kg)',
+                    data: weights,
+                    borderColor: content.lineColor,
+                    backgroundColor: content.fillColor,
+                    fill: true,
+                    tension: 0.3
+                }]
+            }
+        });
+
+        // 2. Grafikon Sna
+        sleepChartInstance = new Chart(document.getElementById('sleepChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sati sna (h)',
+                    data: sleeps,
+                    backgroundColor: content.barColor
+                }]
+            }
+        });
+    }
+
+    // Promjena teme, tekstova i boja grafikona
+    function changeTheme(themeName) {
+        document.documentElement.setAttribute("data-theme", themeName);
+        localStorage.setItem("appTheme", themeName);
+
+        const content = themeContent[themeName] || themeContent["girly-light"];
+
+        setSafeText("appLogo", content.logo);
+        setSafeText("appSubtitle", content.subtitle);
+        setSafeText("navHome", content.navHome);
+        setSafeText("navProgress", content.navProgress);
+        setSafeText("navProfile", content.navProfile);
+        setSafeText("progressTitle", content.progressTitle);
+        setSafeText("ringsTitle", content.ringsTitle);
+
+        // Osvježi boje grafikona
+        renderCharts(themeName);
+    }
+
+    // Učitavanje prstenova (koraci, kalorije, san) i baze
+    function loadRingsAndChartsData() {
+        // Učitaj postavljeni cilj iz profila ako postoji
+        const savedStepsGoal = localStorage.getItem("stepGoal");
+        if (savedStepsGoal) {
+            setSafeText("targetStepsVal", savedStepsGoal);
+        }
+
+        // Dohvati zapise iz baze za grafikone i prstenove
+        fetch("/api/logs")
+            .then(res => res.json())
+            .then(logs => {
+                cachedLogs = logs;
+                if (logs.length > 0) {
+                    const last = logs[logs.length - 1];
+                    if (last.steps !== null && last.steps !== undefined) setSafeText("stepsVal", last.steps);
+                    if (last.sleep !== null && last.sleep !== undefined) setSafeText("sleepVal", last.sleep);
+                }
+                const currentTheme = localStorage.getItem("appTheme") || "girly-light";
+                renderCharts(currentTheme);
+            })
+            .catch(() => {});
+
+        // Preuzmi zbir današnjih kalorija
+        const today = new Date().toLocaleDateString("en-CA");
+        fetch(`/api/meals?date=${today}`)
+            .then(res => res.json())
+            .then(meals => {
+                let totalCals = 0;
+                meals.forEach(m => totalCals += m.calories);
+                setSafeText("calVal", totalCals);
+            })
+            .catch(() => {});
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("appTheme") || "girly-light";
+        const selector = document.getElementById("themeSelector");
+        if (selector) selector.value = savedTheme;
+
+        changeTheme(savedTheme);
+        loadRingsAndChartsData();
+    });
+</script>
+</body>
+</html>

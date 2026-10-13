@@ -11,4 +11,13 @@ public class HomeContoller {
     public String pocetna() {
         return "index";
     }
+    @GetMapping("/napredak")
+    public String napredak() {
+        return "napredak"; // Grafikoni i historija
+    }
+
+    @GetMapping("/profil")
+    public String profil() {
+        return "profil"; // BMI kalkulator i profil
+    }
 }

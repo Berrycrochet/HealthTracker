@@ -1,71 +1,147 @@
-
 <!DOCTYPE html>
 <html lang="bs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthTracker</title>
+    <title>HealthTracker - Dnevnik</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <header>
-    <h1>💗 HealthTracker</h1>
-    <p>Tvoj mali kutak za brigu o sebi</p>
+    <div>
+        <h1 id="appLogo">💗 HealthTracker</h1>
+        <p id="appSubtitle">Tvoj mali kutak za brigu o sebi</p>
+    </div>
+
+    <!-- BIRAČ TEMA SA EMOJIJIMA -->
+    <div class="theme-select-container">
+        <select id="themeSelector" onchange="changeTheme(this.value)">
+            <option value="girly-light">🌸 Girly Whimsy (Light)</option>
+            <option value="girly-dark">🍷 Romantic Dark (Dark Red)</option>
+            <option value="blue-light">🩵 Blue Pastel (Light)</option>
+            <option value="tech-dark">⚡ Tech Bro (Dark Green)</option>
+        </select>
+    </div>
+
+    <nav>
+        <a href="/" class="active" id="navHome">🌸 Dnevnik</a>
+        <a href="/napredak" id="navProgress">📊 Moj Napredak</a>
+        <a href="/profil" id="navProfile">🧘‍♀️ Profil & BMI</a>
+    </nav>
 </header>
 
 <main>
-    <section class="welcome">
-        <h2>Dobrodošla u svoj dnevnik zdravlja! 🌷</h2>
-        <p>Prati svoje navike, bilježi napredak i odvoji vrijeme za sebe.</p>
-    </section>
+    <!-- Motivacijski Agent -->
+    <div class="agent-card">
+        <div class="agent-avatar" id="agentAvatar">🌸</div>
+        <div class="agent-bubble">
+            <h4 id="agentName">Mala Healthie kaže:</h4>
+            <p id="agentMessage">Učitavam tvoje dnevne podatke...</p>
+        </div>
+    </div>
 
+    <!-- Dnevne Sumarne Kartice (Samsung Health Stil) -->
     <section class="cards">
         <article class="card pink">
-            <h3>💗 Krvni pritisak</h3>
-            <p>120/80</p>
-            <span>mmHg · primjer</span>
-        </article>
-
-        <article class="card green">
-            <h3>💧 Puls</h3>
-            <p>72</p>
-            <span>otkucaja/min · primjer</span>
+            <h3>🚶‍♀️ Koraci</h3>
+            <p id="cardSteps">0</p>
+            <span>izračunato danas</span>
         </article>
 
         <article class="card purple">
+            <h3>🥑 Kalorije</h3>
+            <p id="cardCalories">0 kcal</p>
+            <span>iz unijetih obroka</span>
+        </article>
+
+        <article class="card green">
             <h3>🌙 San</h3>
-            <p>7.5 h</p>
-            <span>primjer trajanja sna</span>
+            <p id="cardSleep">0 h</p>
+            <span>vrijeme odmora</span>
         </article>
     </section>
 
+    <!-- 1. DNEVNIK OBROKA (Food Tracker) -->
+    <section class="form-card" style="margin-bottom: 25px;">
+        <h2>🥗 Dnevnik Obroka & Kalorija</h2>
+        <p class="description">Unesi hranu koju si pojela danas za automatski izračun kalorija.</p>
+
+        <form id="mealForm" style="display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 10px; align-items: end;">
+            <div>
+                <label for="mealType">Obrok</label>
+                <select id="mealType" required>
+                    <option>Doručak 🥞</option>
+                    <option>Ručak 🥗</option>
+                    <option>Večera 🍲</option>
+                    <option>Užina 🍓</option>
+                </select>
+            </div>
+            <div>
+                <label for="foodName">Naziv hrane</label>
+                <input type="text" id="foodName" placeholder="Npr. Zobena kaša sa jagodama" required>
+            </div>
+            <div>
+                <label for="calories">Kalorije (kcal)</label>
+                <input type="number" id="calories" placeholder="Npr. 320" required>
+            </div>
+            <button type="submit" style="margin-top: 0;">+ Dodaj</button>
+        </form>
+
+        <div id="mealList" style="margin-top: 20px;">
+            <h3 style="font-size: 15px; margin-bottom: 10px;">Današnji obroci:</h3>
+            <ul id="mealsContainer" style="list-style: none; padding: 0;"></ul>
+        </div>
+    </section>
+
+    <!-- 2. DNEVNI UNOS PARAMETARA (San, Aktivnost, Voda, Pritisak) -->
     <section class="form-card">
-        <h2>✨ Zabilježi kako si danas</h2>
-        <p class="description">
-            Svaki mali korak je važan. Unesi svoje dnevne podatke.
-        </p>
+        <h2>✨ Dnevni parametri & Aktivnost</h2>
 
         <form id="healthForm">
             <label for="date">Datum</label>
             <input type="date" id="date" required>
 
-            <label for="weight">Težina (kg)</label>
-            <input type="number" id="weight"
-                   min="1" max="500" step="0.1"
-                   placeholder="Npr. 65.5">
+            <!-- Kalkulator sna -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div>
+                    <label for="bedTime">Odlazak na spavanje 🌙</label>
+                    <input type="time" id="bedTime" onchange="calculateSleep()">
+                </div>
+                <div>
+                    <label for="wakeTime">Buđenje ☀️</label>
+                    <input type="time" id="wakeTime" onchange="calculateSleep()">
+                </div>
+            </div>
+            <p style="font-size: 13px; color: #8d788b; margin-top: 4px;">
+                Izračunato vrijeme sna: <strong id="calculatedSleepText">0 h</strong>
+            </p>
 
-            <label for="sleep">Koliko si sati spavala?</label>
-            <input type="number" id="sleep"
-                   min="0" max="24" step="0.5"
-                   placeholder="Npr. 8">
+            <!-- Kalkulator koraka / aktivnosti -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div>
+                    <label for="walkMins" id="walkLabel">Minute šetnje / aktivnosti 🚶‍♀️</label>
+                    <input type="number" id="walkMins" placeholder="Npr. 45" oninput="calculateSteps()">
+                </div>
+                <div>
+                    <label for="directSteps" id="stepsLabel">Direktan broj koraka (sat/telefon)</label>
+                    <input type="number" id="directSteps" placeholder="Npr. 6000" oninput="calculateSteps()">
+                </div>
+            </div>
+            <p style="font-size: 13px; color: #8d788b; margin-top: 4px;">
+                Procijenjeni koraci: <strong id="calculatedStepsText">0 koraka</strong>
+            </p>
 
-            <label for="water">Koliko čaša vode si popila?</label>
-            <input type="number" id="water"
-                   min="0" max="100"
-                   placeholder="Npr. 6">
+            <label for="water" id="waterLabel">Čaše vode 💧</label>
+            <input type="number" id="water" placeholder="Npr. 8">
 
-            <label for="mood">Kako se danas osjećaš?</label>
+            <label for="bp">Krvni pritisak & Puls</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" id="bp" placeholder="Pritisak (120/80)">
+                <input type="number" id="pulse" placeholder="Puls (72)">
+            </div>
+
+            <label for="mood">Kako se osjećaš?</label>
             <select id="mood">
                 <option value="">Izaberi raspoloženje</option>
                 <option>Odlično 😊</option>
@@ -74,96 +150,228 @@
                 <option>Pod stresom 🌧️</option>
             </select>
 
-            <label for="notes">Bilješka za danas</label>
-            <textarea id="notes" rows="4"
-                      placeholder="Kako ti je prošao dan? Jesi li šetala, odmarala..."></textarea>
+            <label for="notes">Dnevna bilješka</label>
+            <textarea id="notes" rows="3" placeholder="Kako ti je prošao dan?"></textarea>
 
-            <button type="submit">💗 Sačuvaj dnevni unos</button>
+            <button type="submit" id="saveBtn">💗 Sačuvaj dnevni unos</button>
         </form>
 
-        <p id="message" role="status"></p>
+        <p id="message" style="margin-top: 15px; font-weight: 600;"></p>
     </section>
-
-    <section class="habits">
-        <h2>🌷 Moje zdrave navike</h2>
-        <p>Označi šta si danas uspjela uraditi.</p>
-
-        <label class="habit">
-            <input type="checkbox">
-            Popila sam dovoljno vode 💧
-        </label>
-
-        <label class="habit">
-            <input type="checkbox">
-            Provela sam vrijeme u pokretu 🚶‍♀️
-        </label>
-
-        <label class="habit">
-            <input type="checkbox">
-            Napravila sam pauzu za sebe 🧘‍♀️
-        </label>
-
-        <label class="habit">
-            <input type="checkbox">
-            Pripremila sam se za kvalitetan san 🌙
-        </label>
-    </section>
-
-    <footer>
-        <p>💗 HealthTracker · Briga o sebi počinje malim koracima.</p>
-        <small>
-            Uneseni primjeri nisu medicinski savjet niti procjena zdravlja.
-        </small>
-    </footer>
 </main>
 
 <script>
-    const dateInput = document.getElementById("date");
-    const healthForm = document.getElementById("healthForm");
-    const messageEl = document.getElementById("message");
+    // Rječnik sa svim tekstovima, emoji-jima i nazivima za 4 teme
+    const themeContent = {
+        "girly-light": {
+            logo: "💗 HealthTracker",
+            subtitle: "Tvoj mali kutak za brigu o sebi",
+            navHome: "🌸 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            agentName: "Mala Healthie kaže:",
+            agentAvatar: "🌸",
+            walkLabel: "Minute šetnje / aktivnosti 🚶‍♀️",
+            stepsLabel: "Direktan broj koraka (sat/telefon)",
+            waterLabel: "Čaše vode 💧",
+            btnText: "💗 Sačuvaj dnevni unos"
+        },
+        "girly-dark": {
+            logo: "🥀 HealthTracker",
+            subtitle: "Mračna elegancija i briga o sebi",
+            navHome: "🍷 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♀️ Profil & BMI",
+            agentName: "Velvet Coach kaže:",
+            agentAvatar: "🥀",
+            walkLabel: "Minute šetnje / aktivnosti 🚶‍♀️",
+            stepsLabel: "Direktan broj koraka (sat/telefon)",
+            waterLabel: "Čaše vode 🍷",
+            btnText: "🥀 Sačuvaj dnevni unos"
+        },
+        "blue-light": {
+            logo: "🩵 HealthTracker",
+            subtitle: "Tvoj dnevni tracker zdravlja i kondicije",
+            navHome: "🧊 Dnevnik",
+            navProgress: "📊 Moj Napredak",
+            navProfile: "🧘‍♂️ Profil & BMI",
+            agentName: "Blue Coach kaže:",
+            agentAvatar: "🧊",
+            walkLabel: "Minute šetnje / aktivnosti 🏃‍♂️",
+            stepsLabel: "Direktan broj koraka (sat/telefon)",
+            waterLabel: "Čaše vode 💧",
+            btnText: "🩵 Sačuvaj dnevni unos"
+        },
+        "tech-dark": {
+            logo: "⚡ HealthTracker",
+            subtitle: "Performance & Health Terminal",
+            navHome: "⚡ Terminal",
+            navProgress: "📊 Metrics",
+            navProfile: "⚙️ Config",
+            agentName: "Tech Bro Bot kaže:",
+            agentAvatar: "⚡",
+            walkLabel: "Activity Minutes 🏃‍♂️",
+            stepsLabel: "Direct Steps Log",
+            waterLabel: "Hydration (Glasses) 💧",
+            btnText: "⚡ Log Data"
+        }
+    };
 
+    // Glavna funkcija za izmjenu teme, CSS varijabli i svih tekstova
+    function changeTheme(themeName) {
+        document.documentElement.setAttribute("data-theme", themeName);
+        localStorage.setItem("appTheme", themeName);
+
+        const content = themeContent[themeName] || themeContent["girly-light"];
+
+        // Ažuriranje logotipa, navigacije i labele forme
+        document.getElementById("appLogo").textContent = content.logo;
+        document.getElementById("appSubtitle").textContent = content.subtitle;
+        document.getElementById("navHome").textContent = content.navHome;
+        document.getElementById("navProgress").textContent = content.navProgress;
+        document.getElementById("navProfile").textContent = content.navProfile;
+
+        document.getElementById("agentAvatar").textContent = content.agentAvatar;
+        document.getElementById("agentName").textContent = content.agentName;
+
+        document.getElementById("walkLabel").textContent = content.walkLabel;
+        document.getElementById("stepsLabel").textContent = content.stepsLabel;
+        document.getElementById("waterLabel").textContent = content.waterLabel;
+        document.getElementById("saveBtn").textContent = content.btnText;
+
+        updateAgent();
+    }
+
+    const dateInput = document.getElementById("date");
     dateInput.value = new Date().toLocaleDateString("en-CA");
 
-    healthForm.addEventListener("submit", function(event) {
-        event.preventDefault();
+    let currentSleepDuration = 0;
+    let currentTotalSteps = 0;
+    let totalCaloriesToday = 0;
 
-        const entryData = {
-            date: document.getElementById("date").value,
-            weight: document.getElementById("weight").value ? parseFloat(document.getElementById("weight").value) : null,
-            sleep: document.getElementById("sleep").value ? parseFloat(document.getElementById("sleep").value) : null,
-            water: document.getElementById("water").value ? parseInt(document.getElementById("water").value) : null,
-            mood: document.getElementById("mood").value,
-            notes: document.getElementById("notes").value
+    // 1. Logika za automatski izračun sna
+    function calculateSleep() {
+        const bed = document.getElementById("bedTime").value;
+        const wake = document.getElementById("wakeTime").value;
+
+        if (bed && wake) {
+            const [bH, bM] = bed.split(':').map(Number);
+            const [wH, wM] = wake.split(':').map(Number);
+
+            let bedDate = new Date(2000, 0, 1, bH, bM);
+            let wakeDate = new Date(2000, 0, 1, wH, wM);
+
+            if (wakeDate <= bedDate) {
+                wakeDate.setDate(wakeDate.getDate() + 1);
+            }
+
+            const diffHours = ((wakeDate - bedDate) / (1000 * 60 * 60)).toFixed(1);
+            currentSleepDuration = parseFloat(diffHours);
+            document.getElementById("calculatedSleepText").textContent = currentSleepDuration + " h";
+            document.getElementById("cardSleep").textContent = currentSleepDuration + " h";
+        }
+    }
+
+    // 2. Logika za automatski izračun koraka
+    function calculateSteps() {
+        const mins = parseInt(document.getElementById("walkMins").value) || 0;
+        const direct = parseInt(document.getElementById("directSteps").value) || 0;
+
+        currentTotalSteps = direct + (mins * 100);
+        document.getElementById("calculatedStepsText").textContent = currentTotalSteps + " koraka";
+        document.getElementById("cardSteps").textContent = currentTotalSteps;
+    }
+
+    // 3. Učitavanje i spremanje obroka
+    function loadMeals() {
+        const today = dateInput.value;
+        fetch(`/api/meals?date=${today}`)
+            .then(res => res.json())
+            .then(meals => {
+                const container = document.getElementById("mealsContainer");
+                container.innerHTML = "";
+                totalCaloriesToday = 0;
+
+                meals.forEach(m => {
+                    totalCaloriesToday += m.calories;
+                    const li = document.createElement("li");
+                    li.style.cssText = "padding: 8px 12px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; margin-top: 6px; display: flex; justify-content: space-between;";
+                    li.innerHTML = `<span><strong>${m.mealType}:</strong> ${m.foodName}</span> <span>${m.calories} kcal</span>`;
+                    container.appendChild(li);
+                });
+
+                document.getElementById("cardCalories").textContent = totalCaloriesToday + " kcal";
+                updateAgent();
+            })
+            .catch(() => updateAgent());
+    }
+
+    document.getElementById("mealForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const mealData = {
+            date: dateInput.value,
+            mealType: document.getElementById("mealType").value,
+            foodName: document.getElementById("foodName").value,
+            calories: parseInt(document.getElementById("calories").value)
         };
 
-        // Pozivamo naš Spring Boot API na istoj adresi
-        fetch("/api/logs", {
+        fetch("/api/meals", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(entryData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Greška pri spašavanju.");
-                }
-                return response.json();
-            })
-            .then(savedData => {
-                messageEl.textContent = "Podaci su uspješno sačuvani u bazi! 💗";
-                messageEl.style.color = "#4a7c59";
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(mealData)
+        }).then(() => {
+            document.getElementById("foodName").value = "";
+            document.getElementById("calories").value = "";
+            loadMeals();
+        });
+    });
 
-                healthForm.reset();
-                dateInput.value = new Date().toLocaleDateString("en-CA");
-            })
-            .catch(error => {
-                console.error("Greška:", error);
-                messageEl.textContent = "Greška pri spajanju sa serverom.";
-                messageEl.style.color = "red";
-            });
+    // 4. Pametni Asistent / Agent poruka prilagođena izabranoj temi
+    function updateAgent() {
+        const msg = document.getElementById("agentMessage");
+        const currentTheme = localStorage.getItem("appTheme") || "girly-light";
+        let tips = [];
+
+        if (totalCaloriesToday > 0 && totalCaloriesToday < 1200) {
+            tips.push("Pripazi da uneseš dovoljno hranjivih tvari danas 🥗.");
+        } else if (totalCaloriesToday >= 1200) {
+            tips.push("Odlično balansiraš obroke! ✨");
+        }
+
+        if (currentSleepDuration > 0 && currentSleepDuration < 7) {
+            if (currentTheme === "blue-light") {
+                tips.push("Legao si malo kasno, večeras se odmori ranije 🌙.");
+            } else if (currentTheme === "tech-dark") {
+                tips.push("Low sleep duration detected. Prioritize recovery 🌙.");
+            } else {
+                tips.push("Legla si malo kasno, večeras se odmori ranije 🌙.");
+            }
+        }
+
+        if (tips.length === 0) {
+            if (currentTheme === "blue-light") {
+                msg.textContent = "Pozdrav! Unesi svoje današnje aktivnosti i obroke za brzu analizu 🧊";
+            } else if (currentTheme === "tech-dark") {
+                msg.textContent = "System Ready. Log your daily metrics and meals ⚡";
+            } else if (currentTheme === "girly-dark") {
+                msg.textContent = "Dobrodošla! Unesi aktivnosti i obroke za noćnu analizu 🍷";
+            } else {
+                msg.textContent = "Ćao draga! Unesi svoje današnje aktivnosti i obroke za brzu analizu 🌸";
+            }
+        } else {
+            msg.textContent = tips.join(" ");
+        }
+    }
+
+    // Inicijalizacija pri otvaranju stranice
+    window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("appTheme") || "girly-light";
+        const selector = document.getElementById("themeSelector");
+        if (selector) selector.value = savedTheme;
+        changeTheme(savedTheme);
+        loadMeals();
     });
 </script>
-
 </body>
 </html>
